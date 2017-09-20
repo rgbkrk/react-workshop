@@ -19,18 +19,17 @@ import sortBy from "sort-by";
 const DATA = {
   title: "Menu",
   items: [
-    { id: 1, name: "tacos", type: "mexican" },
-    { id: 2, name: "burrito", type: "mexican" },
-    { id: 3, name: "tostada", type: "mexican" },
-    { id: 4, name: "mushy peas", type: "english" },
-    { id: 5, name: "fish and chips", type: "english" },
-    { id: 6, name: "black pudding", type: "english" }
+    { id: 1, name: "tacos 🌮", type: "mexican" },
+    { id: 2, name: "burrito 🌯", type: "mexican" },
+    { id: 3, name: "tostada 🇲🇽", type: "mexican" },
+    { id: 4, name: "mushy peas 🇬🇧", type: "english" },
+    { id: 5, name: "fish and chips 🐟🍟", type: "english" },
+    { id: 6, name: "black pudding ⚫️", type: "english" },
+    { id: 7, name: "onigiri 🍙", type: "japanese" }
   ]
 };
 
-const foodTypes = Array.from(new Set(DATA.items.map(item => item.type))).concat(
-  "all"
-);
+const foodTypes = [...new Set(DATA.items.map(item => item.type)), "all"];
 
 const FoodSelect = props => {
   const handleChange = event => {
@@ -49,10 +48,10 @@ const FoodSelect = props => {
 };
 
 export class Menu extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { filter: "mexican", reverseSort: false };
-  }
+  state = {
+    filter: "mexican",
+    reverseSort: false
+  };
 
   render() {
     return (
@@ -82,6 +81,12 @@ export class Menu extends React.Component {
   }
 }
 
-ReactDOM.render(<Menu />, document.getElementById("app"), () => {
-  require("./tests").run();
-});
+ReactDOM.render(
+  <div>
+    <Menu />
+  </div>,
+  document.getElementById("app"),
+  () => {
+    require("./tests").run();
+  }
+);
