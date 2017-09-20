@@ -28,13 +28,58 @@ const DATA = {
   ]
 };
 
-function Menu() {
+const foodTypes = Array.from(new Set(DATA.items.map(item => item.type))).concat(
+  "all"
+);
+
+const FoodSelect = props => {
+  const handleChange = event => {
+    props.onChange(event.target.value);
+  };
+
   return (
-    <div>
-      <h1>{DATA.title}</h1>
-      <ul>{DATA.items.map(item => <li key={item.id}>{item.name}</li>)}</ul>
-    </div>
+    <select value={props.value} onChange={handleChange}>
+      {foodTypes.map(type => (
+        <option value={type} key={type}>
+          {type}
+        </option>
+      ))}
+    </select>
   );
+};
+
+export class Menu extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { filter: "mexican", reverseSort: false };
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>{DATA.title}</h1>
+        <FoodSelect
+          value={this.state.filter}
+          onChange={value => this.setState({ filter: value })}
+        />
+        <button
+          onClick={() =>
+            this.setState({ reverseSort: !this.state.reverseSort })}
+        >
+          Toggle Sort Order
+        </button>
+        <ul>
+          {DATA.items
+            .sort(sortBy((this.state.reverseSort ? "-" : "") + "name"))
+            .filter(
+              item =>
+                this.state.filter === "all" || item.type === this.state.filter
+            )
+            .map(item => <li key={item.id}>{item.name}</li>)}
+        </ul>
+      </div>
+    );
+  }
 }
 
 ReactDOM.render(<Menu />, document.getElementById("app"), () => {
