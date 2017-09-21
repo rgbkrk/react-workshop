@@ -1,42 +1,70 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import createOscillator from './utils/createOscillator'
+import React from "react";
+import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
+import createOscillator from "./utils/createOscillator";
 
-const styles = {}
+const styles = {};
 
 styles.theremin = {
   height: 200,
   width: 200,
   fontSize: 10,
-  border: '1px solid',
-  cursor: 'crosshair',
+  border: "1px solid",
+  cursor: "crosshair",
   margin: 10,
-  display: 'inline-block'
+  display: "inline-block"
+};
+
+class Tone extends React.Component {
+  doImperativeWork() {
+    const { isPlaying, pitch, volume } = this.props;
+    if (isPlaying) {
+      this.oscillator.play();
+    } else {
+      this.oscillator.stop();
+    }
+
+    this.oscillator.setPitchBend(pitch);
+    this.oscillator.setVolume(volume);
+  }
+
+  componentDidMount() {
+    this.oscillator = createOscillator();
+    this.doImperativeWork();
+  }
+
+  componentDidUpdate() {
+    this.doImperativeWork();
+  }
+
+  render() {
+    return <pre>{JSON.stringify(this.props, null, 2)}</pre>;
+  }
 }
 
 class App extends React.Component {
-  componentDidMount() {
-    this.oscillator = createOscillator()
-  }
-
   play = () => {
-    this.oscillator.play()
-  }
+    this.setState({ isPlaying: true });
+  };
 
   stop = () => {
-    this.oscillator.stop()
-  }
+    this.setState({ isPlaying: false });
+  };
 
-  changeTone = (event) => {
-    const { clientX, clientY } = event
-    const { top, right, bottom, left } = event.target.getBoundingClientRect()
-    const pitch = (clientX - left) / (right - left)
-    const volume = 1 - (clientY - top) / (bottom - top)
+  state = {
+    isPlaying: false,
+    pitch: 0.25,
+    volume: 0.14
+  };
 
-    this.oscillator.setPitchBend(pitch)
-    this.oscillator.setVolume(volume)
-  }
+  changeTone = event => {
+    const { clientX, clientY } = event;
+    const { top, right, bottom, left } = event.target.getBoundingClientRect();
+    const pitch = (clientX - left) / (right - left);
+    const volume = 1 - (clientY - top) / (bottom - top);
+
+    this.setState({ pitch, volume });
+  };
 
   render() {
     return (
@@ -47,13 +75,19 @@ class App extends React.Component {
           onMouseEnter={this.play}
           onMouseLeave={this.stop}
           onMouseMove={this.changeTone}
-        />
+        >
+          <Tone
+            isPlaying={this.state.isPlaying}
+            pitch={this.state.pitch}
+            volume={this.state.volume}
+          />
+        </div>
       </div>
-    )
+    );
   }
 }
 
-ReactDOM.render(<App/>, document.getElementById('app'))
+ReactDOM.render(<App />, document.getElementById("app"));
 
 ////////////////////////////////////////////////////////////////////////////////
 // Can't predict what the sound is going to be by looking at state or the render

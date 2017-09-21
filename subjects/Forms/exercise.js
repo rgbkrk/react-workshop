@@ -15,12 +15,75 @@
 // - If the user types something into shipping, then checks the checkbox, then
 //   unchecks the checkbox, ensure the field has the information from
 //   before clicking the checkbox the first time
-import React from 'react'
-import ReactDOM from 'react-dom'
-import serializeForm from 'form-serialize'
+import React from "react";
+import ReactDOM from "react-dom";
+import serializeForm from "form-serialize";
 
 class CheckoutForm extends React.Component {
+  state = {
+    shippingSameAsBilling: false,
+    billingName: "",
+    billingState: "",
+    shippingName: "",
+    shippingState: ""
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    const values = this.state;
+  };
+
   render() {
+    console.log(this.state);
+
+    const billingNameInput = (
+      <input
+        type="text"
+        defaultValue={this.state.billingName}
+        onChange={ev => this.setState({ billingName: ev.target.value })}
+        name="billingName"
+      />
+    );
+
+    const billingStateInput = (
+      <input
+        type="text"
+        size="2"
+        defaultValue={this.state.billingState}
+        onChange={ev => this.setState({ billingState: ev.target.value })}
+        name="billingState"
+      />
+    );
+
+    const shippingNameInput = (
+      <input
+        type="text"
+        value={
+          this.state.shippingSameAsBilling
+            ? this.state.billingName
+            : this.state.shippingName
+        }
+        readOnly={this.state.shippingSameAsBilling}
+        onChange={ev => this.setState({ shippingName: ev.target.value })}
+        name="shippingName"
+      />
+    );
+
+    const shippingStateInput = (
+      <input
+        type="text"
+        size="2"
+        value={
+          this.state.shippingSameAsBilling
+            ? this.state.billingState
+            : this.state.shippingState
+        }
+        readOnly={this.state.shippingSameAsBilling}
+        onChange={ev => this.setState({ shippingState: ev.target.value })}
+        name="shippingState"
+      />
+    );
+
     return (
       <div>
         <h1>Checkout</h1>
@@ -28,23 +91,41 @@ class CheckoutForm extends React.Component {
           <fieldset>
             <legend>Billing Address</legend>
             <p>
-              <label>Billing Name: <input type="text"/></label>
+              <label>
+                Billing Name:
+                {billingNameInput}
+              </label>
             </p>
             <p>
-              <label>Billing State: <input type="text" size="2"/></label>
+              <label>
+                Billing State:
+                {billingStateInput}
+              </label>
             </p>
           </fieldset>
 
-          <br/>
+          <br />
 
           <fieldset>
-            <label><input type="checkbox"/> Same as billing</label>
+            <label>
+              <input
+                type="checkbox"
+                onChange={() =>
+                  this.setState({
+                    shippingSameAsBilling: !this.state.shippingSameAsBilling
+                  })}
+              />
+              Same as billing
+            </label>
             <legend>Shipping Address</legend>
             <p>
-              <label>Shipping Name: <input type="text"/></label>
+              <label>
+                Shipping Name:
+                {shippingNameInput}
+              </label>
             </p>
             <p>
-              <label>Shipping State: <input type="text" size="2"/></label>
+              <label>Shipping State: {shippingStateInput}</label>
             </p>
           </fieldset>
 
@@ -53,8 +134,8 @@ class CheckoutForm extends React.Component {
           </p>
         </form>
       </div>
-    )
+    );
   }
 }
 
-ReactDOM.render(<CheckoutForm/>, document.getElementById('app'))
+ReactDOM.render(<CheckoutForm />, document.getElementById("app"));
