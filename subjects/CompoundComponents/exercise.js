@@ -29,54 +29,70 @@
 // - Arrow right, arrow down should select the next option
 // - Arrow left, arrow up should select the previous option
 ////////////////////////////////////////////////////////////////////////////////
-import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
+import React from "react";
+import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 
 class RadioGroup extends React.Component {
   static propTypes = {
     defaultValue: PropTypes.string
-  }
+  };
+
+  state = {
+    value: this.props.defaultValue
+  };
 
   render() {
-    return <div>{this.props.children}</div>
+    const { children } = this.props;
+
+    return (
+      <div>
+        {React.Children.map(children, (child, index) =>
+          React.cloneElement(child, {
+            isSelected: child.props.value === this.state.value,
+            onSelect: () => this.setState({ value: child.props.value })
+          })
+        )}
+      </div>
+    );
   }
 }
 
 class RadioOption extends React.Component {
   static propTypes = {
     value: PropTypes.string
-  }
+  };
 
   render() {
     return (
-      <div>
-        <RadioIcon isSelected={false}/> {this.props.children}
+      <div onClick={this.props.onSelect}>
+        <RadioIcon isSelected={this.props.isSelected} />
+        <span style={{ cursor: "pointer" }}>{this.props.children}</span>
       </div>
-    )
+    );
   }
 }
 
 class RadioIcon extends React.Component {
   static propTypes = {
     isSelected: PropTypes.bool.isRequired
-  }
+  };
 
   render() {
     return (
       <div
         style={{
-          borderColor: '#ccc',
+          borderColor: "#ccc",
           borderWidth: 3,
-          borderStyle: this.props.isSelected ? 'inset' : 'outset',
+          borderStyle: this.props.isSelected ? "inset" : "outset",
           height: 16,
           width: 16,
-          display: 'inline-block',
-          cursor: 'pointer',
-          background: this.props.isSelected ? 'rgba(0, 0, 0, 0.05)' : ''
+          display: "inline-block",
+          cursor: "pointer",
+          background: this.props.isSelected ? "rgba(0, 0, 0, 0.05)" : ""
         }}
       />
-    )
+    );
   }
 }
 
@@ -93,8 +109,8 @@ class App extends React.Component {
           <RadioOption value="aux">Aux</RadioOption>
         </RadioGroup>
       </div>
-    )
+    );
   }
 }
 
-ReactDOM.render(<App/>, document.getElementById('app'))
+ReactDOM.render(<App />, document.getElementById("app"));
