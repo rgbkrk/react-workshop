@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import * as styles from "./styles";
 
+/*
 class Tabs extends React.Component {
   state = {
     activeIndex: 0
@@ -46,9 +47,115 @@ class Tabs extends React.Component {
     );
   }
 }
+*/
+
+class NewTabs extends React.Component {
+  state = {
+    activeIndex: 0
+  };
+
+  render() {
+    const children = React.Children.map(this.props.children, child => {
+      if (child.type === TabList) {
+        return React.cloneElement(child, {
+          activeTabIndex: this.state.activeIndex,
+          onTabSelect: index => this.setState({ activeIndex: index })
+        });
+      } else if (child.type === TabPanels) {
+        return React.cloneElement(child, {
+          activeTabIndex: this.state.activeIndex
+        });
+      } else {
+        return child;
+      }
+    });
+
+    return <div>{children}</div>;
+  }
+}
+
+const TabList = ({ children, activeTabIndex, onTabSelect }) => (
+  <div style={styles.tabs}>
+    {React.Children.map(children, (child, index) =>
+      React.cloneElement(child, {
+        isActive: index === activeTabIndex,
+        onSelect: () => onTabSelect(index)
+      })
+    )}
+  </div>
+);
+
+const Tab = ({ children, isActive, disabled, onSelect }) => (
+  <div
+    style={
+      disabled ? styles.disabledTab : isActive ? styles.activeTab : styles.tab
+    }
+    onClick={disabled ? null : onSelect}
+  >
+    {children}
+  </div>
+);
+
+const TabPanels = ({ children, activeTabIndex }) => {
+  return <div style={styles.tabPanels}>{children[activeTabIndex]}</div>;
+};
+
+const TabPanel = ({ children }) => <div>{children}</div>;
+
+const LegacyTabs = ({ data, disabled, tabsOnBottom }) => {
+  const tabList = (
+    <TabList key="list">
+      {data.map((item, index) => (
+        <Tab key={item.label} disabled={disabled.includes(index)}>
+          {item.label}
+        </Tab>
+      ))}
+    </TabList>
+  );
+
+  const tabPanels = (
+    <TabPanels key="panels">
+      {data.map(item => (
+        <div>
+          <TabPanel key={item.label}>{item.description}</TabPanel>
+          <app-drawer />
+        </div>
+      ))}
+    </TabPanels>
+  );
+
+  return (
+    <NewTabs>
+      {tabsOnBottom ? [tabPanels, tabList] : [tabList, tabPanels]}
+    </NewTabs>
+  );
+};
+
+const Tabs = LegacyTabs;
 
 class App extends React.Component {
   render() {
+    return (
+      <NewTabs>
+        <TabList>
+          <Tab>Tacos</Tab>
+          <Tab disabled>Burritos</Tab>
+          <Tab>Coconut Korma</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <p>Tacos are delicious</p>
+          </TabPanel>
+          <TabPanel>
+            <p>Sometimes a burrito is what you really need</p>
+          </TabPanel>
+          <TabPanel>
+            <p>Might be your best option</p>
+          </TabPanel>
+        </TabPanels>
+      </NewTabs>
+    );
+
     const tabData = [
       {
         label: "Tacos",
