@@ -15,6 +15,33 @@ styles.theremin = {
   display: "inline-block"
 };
 
+/*
+class TextMeasurer extends React.Componenet {
+  state = {
+    width: 0
+  };
+
+  componentDidMount() {
+    this.setState({ width: this.node.offsetWidth });
+  }
+
+  componentDidUpdate() {
+    this.setState({ width: this.node.offsetWidth });
+  }
+
+  render() {
+    return (
+      <div
+        ref={node => {
+          this.node = node;
+        }}
+      >
+        Text
+      </div>
+    );
+  }
+}*/
+
 class Tone extends React.Component {
   doImperativeWork() {
     const { isPlaying, pitch, volume } = this.props;
