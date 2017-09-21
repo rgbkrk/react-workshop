@@ -1,74 +1,78 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
-import * as styles from './styles'
+import React from "react";
+import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
+import * as styles from "./styles";
 
 class Tabs extends React.Component {
   state = {
     activeIndex: 0
-  }
+  };
 
   selectTabIndex(activeIndex) {
-    this.setState({ activeIndex })
+    this.setState({ activeIndex });
   }
 
   renderTabs() {
     return this.props.data.map((tab, index) => {
-      const isActive = this.state.activeIndex === index
+      const isActive = this.state.activeIndex === index;
+      const isDisabled = this.props.disabled.includes(index);
       return (
         <div
           key={tab.label}
-          style={isActive ? styles.activeTab : styles.tab}
-          onClick={() => this.selectTabIndex(index)}
-        >{tab.label}</div>
-      )
-    })
+          style={
+            isDisabled
+              ? styles.disabledTab
+              : isActive ? styles.activeTab : styles.tab
+          }
+          onClick={isDisabled ? null : () => this.selectTabIndex(index)}
+        >
+          {tab.label}
+        </div>
+      );
+    });
   }
 
   renderPanel() {
-    const tab = this.props.data[this.state.activeIndex]
-    return (
-      <div>{tab.description}</div>
-    )
+    const tab = this.props.data[this.state.activeIndex];
+    return <div>{tab.description}</div>;
   }
 
   render() {
     return (
       <div>
-        <div style={styles.tabs}>
-          {this.renderTabs()}
-        </div>
-        <div style={styles.tabPanels}>
-          {this.renderPanel()}
-        </div>
+        <div style={styles.tabs}>{this.renderTabs()}</div>
+        <div style={styles.tabPanels}>{this.renderPanel()}</div>
       </div>
-    )
+    );
   }
 }
 
 class App extends React.Component {
   render() {
     const tabData = [
-      { label: 'Tacos',
+      {
+        label: "Tacos",
         description: <p>Tacos are delicious</p>
       },
-      { label: 'Burritos',
+      {
+        label: "Burritos",
         description: <p>Sometimes a burrito is what you really need</p>
       },
-      { label: 'Coconut Korma',
+      {
+        label: "Coconut Korma",
         description: <p>Might be your best option</p>
       }
-    ]
+    ];
 
     return (
       <div>
-        <Tabs data={tabData}/>
+        <Tabs data={tabData} tabsOnBottom={false} disabled={[1]} />
       </div>
-    )
+    );
   }
 }
 
-ReactDOM.render(<App/>, document.getElementById('app'))
+ReactDOM.render(<App />, document.getElementById("app"));
 
 ////////////////////////////////////////////////////////////////////////////////
 // What if I wanted tabs on the bottom?
