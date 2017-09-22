@@ -41,6 +41,15 @@ const withMouse = Component => {
   };
 };
 
+const withCat = Component => {
+  return class extends React.Component {
+    render() {
+      const cat = this.props.mouse;
+      return <Component {...this.props} cat={cat} />;
+    }
+  };
+};
+
 class App extends React.Component {
   static propTypes = {
     mouse: PropTypes.shape({
@@ -62,12 +71,12 @@ class App extends React.Component {
         ) : (
           <h1>We don't know the mouse position yet :(</h1>
         )}
-        <Cat x={mouse.x} y={mouse.y} />
+        <Cat x={cat.x} y={cat.y} />
       </div>
     );
   }
 }
 
-const AppWithMouse = withMouse(App);
+const AppWithMouse = withMouse(withCat(App));
 
 ReactDOM.render(<AppWithMouse />, document.getElementById("app"));
