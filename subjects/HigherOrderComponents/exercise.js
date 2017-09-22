@@ -16,7 +16,9 @@ import PropTypes from "prop-types";
 import * as styles from "./styles";
 
 const Cat = props => (
-  <div style={Object.assign({ left: props.x, top: props.y }, styles.cat)} />
+  <div
+    style={Object.assign({ left: props.x - 30, top: props.y - 70 }, styles.cat)}
+  />
 );
 
 const withMouse = Component => {
@@ -44,8 +46,17 @@ const withMouse = Component => {
 const withCat = Component => {
   return class extends React.Component {
     render() {
-      const cat = this.props.mouse;
-      return <Component {...this.props} cat={cat} />;
+      const cat = Object.assign({}, this.props.mouse);
+
+      // cat.x = cat.x + Math.random() + 10;
+      // cat.y = cat.y + Math.random() + 10;
+
+      return (
+        <div>
+          <Cat {...cat} />
+          <Component {...this.props} cat={cat} />
+        </div>
+      );
     }
   };
 };
