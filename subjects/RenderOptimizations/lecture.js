@@ -1,41 +1,41 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from "react";
+import ReactDOM from "react-dom";
 
 class Lines extends React.Component {
   static defaultProps = {
-    maxLength: 5
-  }
+    maxLength: 4
+  };
 
   state = {
     lines: []
-  }
+  };
 
   addLine = () => {
     this.setState(state => {
-      const lines = state.lines.concat([ 'The date is ' + (new Date).toLocaleString() ])
+      const lines = state.lines.concat([
+        "The date is " + new Date().toLocaleString()
+      ]);
 
       return {
         lines: lines.length > this.props.maxLength ? lines.slice(1) : lines
-      }
-    })
-  }
+      };
+    });
+  };
 
   componentDidMount() {
-    setInterval(this.addLine, 1000)
+    setInterval(this.addLine, 1000);
   }
 
   render() {
     return (
       <ul>
-        {this.state.lines.map((line, index) => (
-          <li key={index}>{line}</li>
-        ))}
+        {this.state.lines.map((line, index) => <li key={line}>{line}</li>)}
       </ul>
-    )
+    );
   }
 }
 
-ReactDOM.render(<Lines/>, document.getElementById('app'))
+ReactDOM.render(<Lines />, document.getElementById("app"));
 
 // import React from 'react'
 // import ReactDOM from 'react-dom'
