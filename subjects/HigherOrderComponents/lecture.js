@@ -3,14 +3,9 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import createMediaListener from "./utils/createMediaListener";
 
-// Wrapper around window match media
-const media = createMediaListener({
-  big: "(min-width : 1000px)",
-  tiny: "(max-width: 400px)"
-});
-
-const withMedia = Component =>
-  class Media extends React.Component {
+const withMedia = (Component, query) => {
+  const media = createMediaListener(query);
+  return class Media extends React.Component {
     state = {
       media: media.getState()
     };
@@ -27,6 +22,7 @@ const withMedia = Component =>
       return <Component {...this.props} media={this.state.media} />;
     }
   };
+};
 
 class App extends React.Component {
   render() {
@@ -42,7 +38,10 @@ class App extends React.Component {
   }
 }
 
-const AppWithMedia = withMedia(App);
+const AppWithMedia = withMedia(App, {
+  big: "(min-width : 1000px)",
+  tiny: "(max-width: 400px)"
+});
 
 ReactDOM.render(
   <AppWithMedia message={"🎄"} />,
