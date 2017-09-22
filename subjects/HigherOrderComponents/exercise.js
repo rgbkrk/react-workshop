@@ -15,11 +15,13 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import * as styles from "./styles";
 
-const Cat = props => (
-  <div
-    style={Object.assign({ left: props.x - 30, top: props.y - 70 }, styles.cat)}
-  />
-);
+import withCat from "./utils/withCat";
+
+// const Cat = props => (
+//   <div
+//     style={Object.assign({ left: props.x - 30, top: props.y - 70 }, styles.cat)}
+//   />
+// );
 
 const withMouse = Component => {
   return class extends React.Component {
@@ -43,35 +45,34 @@ const withMouse = Component => {
   };
 };
 
-const withCat = Component => {
-  return class extends React.Component {
-    render() {
-      const cat = Object.assign({}, this.props.mouse);
-
-      // cat.x = cat.x + Math.random() + 10;
-      // cat.y = cat.y + Math.random() + 10;
-
-      return (
-        <div>
-          <Cat {...cat} />
-          <Component {...this.props} cat={cat} />
-        </div>
-      );
-    }
-  };
-};
+// const withCat = Component => {
+//   return class extends React.Component {
+//     render() {
+//       const cat = Object.assign({}, this.props.mouse);
+//
+//       // cat.x = cat.x + Math.random() + 10;
+//       // cat.y = cat.y + Math.random() + 10;
+//
+//       return (
+//         <div>
+//           <Cat {...cat} />
+//           <Component {...this.props} cat={cat} />
+//         </div>
+//       );
+//     }
+//   };
+// };
 
 class App extends React.Component {
   static propTypes = {
     mouse: PropTypes.shape({
       x: PropTypes.number.isRequired,
       y: PropTypes.number.isRequired
-    }).isRequired,
-    cat: PropTypes.any
+    }).isRequired
   };
 
   render() {
-    const { mouse, cat } = this.props;
+    const { mouse } = this.props;
 
     return (
       <div style={styles.container}>
@@ -82,7 +83,6 @@ class App extends React.Component {
         ) : (
           <h1>We don't know the mouse position yet :(</h1>
         )}
-        <Cat x={cat.x} y={cat.y} />
       </div>
     );
   }
