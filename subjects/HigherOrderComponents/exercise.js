@@ -15,7 +15,9 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import * as styles from "./styles";
 
-const Cat = props => <div style={styles.cat} />;
+const Cat = props => (
+  <div style={Object.assign({ left: props.x, top: props.y }, styles.cat)} />
+);
 
 const withMouse = Component => {
   return class extends React.Component {
@@ -44,7 +46,8 @@ class App extends React.Component {
     mouse: PropTypes.shape({
       x: PropTypes.number.isRequired,
       y: PropTypes.number.isRequired
-    }).isRequired
+    }).isRequired,
+    cat: PropTypes.any
   };
 
   render() {
@@ -59,6 +62,7 @@ class App extends React.Component {
         ) : (
           <h1>We don't know the mouse position yet :(</h1>
         )}
+        <Cat x={mouse.x} y={mouse.y} />
       </div>
     );
   }
